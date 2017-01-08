@@ -1,0 +1,13 @@
+{
+  "name": "rarbg",
+  "version": "0.0.0",
+  "main": "index.js",
+  "bin": {
+    "rarbg": "./index.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^0.22.0",
+    "commander": "^2.9.0"
+  }
+}
