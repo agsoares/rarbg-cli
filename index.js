@@ -7,7 +7,7 @@ const program = require('commander');
 
 const baseUrl = 'https://torrentapi.org/pubapi_v2.php';
 
-const searchTorrent = (token, search) => {
+const searchTorrent = (token, search, retryCount) => {
   request
     .get(baseUrl)
     .query({
@@ -19,14 +19,12 @@ const searchTorrent = (token, search) => {
       app_id: 'rarbg-cli',
     })
     .end((err, res) => {
-      if (res.statusCode === 200) {
-        if (res.body.torrent_results) {
-          console.log(res.body.torrent_results[0].download);
-        } else {
-          console.log('Not found :(');
-        }
+      if (res.statusCode === 200 && res.body.torrent_results) {
+        console.log(res.body.torrent_results[0].download);
+      } else if (retryCount > 0) {
+        searchTorrent(res.body.token, search, retryCount - 1);
       } else {
-        console.log('Error');
+        console.log('Not Found :(');
       }
     });
 };
@@ -40,7 +38,9 @@ program
       .query({ get_token: 'get_token', app_id: 'rarbg-cli' })
       .end((err, res) => {
         if (res.statusCode === 200) {
-          searchTorrent(res.body.token, search);
+          searchTorrent(res.body.token, search, 1);
+        } else {
+          console.log('Authentication Error');
         }
       });
   })
