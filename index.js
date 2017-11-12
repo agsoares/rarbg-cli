@@ -22,7 +22,7 @@ const searchTorrent = (token, search, retryCount) => {
       if (res.statusCode === 200 && res.body.torrent_results) {
         console.log(res.body.torrent_results[0].download);
       } else if (retryCount > 0) {
-        searchTorrent(res.body.token, search, retryCount - 1);
+        searchTorrent(token, search, retryCount - 1);
       } else {
         console.log('Not Found :(');
       }
